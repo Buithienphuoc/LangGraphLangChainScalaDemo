@@ -17,8 +17,8 @@ guardrail) và **LangGraph4j** (graph workflow, rẽ nhánh, subgraph, checkpoin
 | Postgres / Docker | **Không cần.** Mặc định dữ liệu nằm trong RAM. |
 
 ```bash
-git clone https://github.com/Buithienphuoc/LangGraphLangChainScalaDemo.git
-cd LangGraphLangChainScalaDemo
+git clone https://github.com/Buithienphuoc/LangGraphLangChainScalaExperiment.git
+cd LangGraphLangChainScalaExperiment
 sbt compile        # kiểm tra build, tải thư viện
 ```
 
