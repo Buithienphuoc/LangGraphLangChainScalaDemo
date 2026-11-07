@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trang bác sĩ</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <style>.hidden{display:none}</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+<div id="header"></div>
+<main class="max-w-7xl mx-auto px-4 py-6">
+  <h1 class="text-xl font-semibold mb-1">Lịch hẹn và tóm tắt trước khám</h1>
+  <p class="text-sm text-slate-500 mb-4">Tóm tắt SOAP do node <code>summarize</code> của graph tạo bằng structured output của LangChain4j.</p>
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+    <table class="w-full text-sm" data-testid="appointments">
+      <thead class="bg-slate-100 text-left"><tr>
+        <th class="p-3">Mã</th><th class="p-3">Thời gian</th><th class="p-3">Bệnh nhân</th><th class="p-3">Bác sĩ</th>
+        <th class="p-3">Lý do</th><th class="p-3">Trạng thái</th><th class="p-3">Tóm tắt SOAP</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+</main>
+<script type="module">
+  import { api, esc, header } from "/assets/common.js";
+  document.getElementById("header").innerHTML = header("doctor");
+  const list = await api("/api/appointments");
+  const soap = (s) => s ? ["S", "O", "A", "P"].map((k, i) => `<div><b>${k}:</b> ${esc([s.subjective, s.objective, s.assessment, s.plan][i])}</div>`).join("")
+                        : '<i class="text-slate-400">chưa có</i>';
+  document.getElementById("rows").innerHTML = list.length ? list.map((a) => `
+    <tr class="border-t border-slate-200 align-top" data-testid="appointment-row">
+      <td class="p-3 font-mono text-xs">${esc(a.id)}</td><td class="p-3">${esc(a.time)}</td><td class="p-3">${esc(a.patient)}</td>
+      <td class="p-3">${esc(a.doctor)}, ${esc(a.specialty)}</td><td class="p-3">${esc(a.reason)}</td>
+      <td class="p-3">${a.status === "Booked" ? '<span class="text-teal-700">Đã đặt</span>' : '<span class="text-slate-400">Đã huỷ</span>'}</td>
+      <td class="p-3 space-y-1 max-w-md">${soap(a.summary)}</td></tr>`).join("")
+    : '<tr><td colspan="7" class="p-6 text-center text-slate-400">Chưa có lịch hẹn nào. Hãy đặt lịch ở trang Trợ lý.</td></tr>';
+</script>
+</body>
+</html>

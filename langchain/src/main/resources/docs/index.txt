@@ -1,0 +1,9 @@
+clinic|phong-kham-thong-tin-chung.md
+clinic|bang-gia-dich-vu.md
+clinic|chuan-bi-truoc-khi-kham.md
+health|tieu-duong-type-2.md
+health|tang-huyet-ap.md
+health|cam-cum-va-cam-lanh.md
+health|sot-xuat-huyet.md
+health|trao-nguoc-da-day-thuc-quan.md
+health|giac-ngu.md
