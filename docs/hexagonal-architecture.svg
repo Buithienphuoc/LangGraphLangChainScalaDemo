@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1010" viewBox="0 0 1600 1010">
+<defs><marker id="ah-2f9e57" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f9e57"/></marker><marker id="ah-d1553a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d1553a"/></marker></defs>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="800.0" y="34.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="22" font-weight="bold" fill="#1f2328" text-anchor="middle">Health care demo: Hexagonal Architecture (5 module sbt)</text>
+<text x="800.0" y="56.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="13" font-weight="normal" fill="#57606a" text-anchor="middle">Mũi tên = chiều gọi. Lõi (lục giác) chỉ biết các port của domain; LangChain4j, http4s, JDBC nằm ngoài.</text>
+<polygon points="800.0,80.0 453.6,280.0 453.6,680.0 800.0,880.0 1146.4,680.0 1146.4,280.0" fill="#eef4ff" stroke="#3b6fd8" stroke-width="2.5"/>
+<rect x="648.0" y="228.0" width="304.0" height="455.0" rx="10" fill="#dbe7ff" stroke="#3b6fd8" stroke-width="1.5"/>
+<text x="660.0" y="252.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="15" font-weight="bold" fill="#1f2328" text-anchor="start">langgraph</text>
+<text x="660.0" y="270.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="11" font-weight="normal" fill="#57606a" text-anchor="start">điều phối: cài đặt ConversationUseCase · LangGraph4j</text>
+<text x="662.0" y="294.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">• GraphConversationService</text>
+<text x="662.0" y="312.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">• HealthGraph (supervisor graph):</text>
+<text x="662.0" y="330.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  guardrail → router → faq | triage (subgraph)</text>
+<text x="662.0" y="348.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  | booking ⇢ confirm_booking (interrupt)</text>
+<text x="662.0" y="366.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  | medication | other;  summarize (SOAP)</text>
+<text x="662.0" y="384.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">• HealthState · checkpoint theo threadId</text>
+<text x="662.0" y="402.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  (MemorySaver / PostgresSaver)</text>
+<text x="662.0" y="424.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="11" font-weight="bold" fill="#3b6fd8" text-anchor="start">KHÔNG phụ thuộc module langchain</text>
+<rect x="662.0" y="453.0" width="276.0" height="205.0" rx="10" fill="#fff4d6" stroke="#c98a00" stroke-width="1.5"/>
+<text x="672.0" y="476.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="14" font-weight="bold" fill="#1f2328" text-anchor="start">domain</text>
+<text x="672.0" y="498.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">model: Patient · Doctor · Slot</text>
+<text x="672.0" y="517.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  Appointment · ConsultationSummary</text>
+<text x="672.0" y="536.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  Intent · SymptomReport · TriageResult</text>
+<text x="672.0" y="555.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  TurnResult · PendingBooking · TraceEvent</text>
+<text x="672.0" y="574.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">quy tắc: RedFlags · DrugInteractions</text>
+<text x="672.0" y="593.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">port/: ConversationUseCase (vào)</text>
+<text x="672.0" y="612.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  ClinicRepository · AiPorts (ra)</text>
+<text x="672.0" y="631.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">inmemory/: InMemoryClinicRepository</text>
+<text x="672.0" y="650.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#57606a" text-anchor="start" font-style="italic">Scala thuần, không thư viện ngoài</text>
+<rect x="441.6" y="454.0" width="196.0" height="52.0" rx="6" fill="#ffffff" stroke="#2f9e57" stroke-width="1.8"/>
+<text x="539.6" y="478.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" font-weight="bold" fill="#1f2328" text-anchor="middle">ConversationUseCase</text>
+<text x="539.6" y="492.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="10" font-weight="normal" fill="#57606a" text-anchor="middle">send · decide · pending · diagram</text>
+<text x="447.6" y="442.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="bold" fill="#2f9e57" text-anchor="start">PORT VÀO (driving)</text>
+<text x="980.4" y="262.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="bold" fill="#d1553a" text-anchor="start">PORT RA (driven)</text>
+<rect x="980.4" y="274.0" width="178.0" height="32.0" rx="6" fill="#ffffff" stroke="#d1553a" stroke-width="1.8"/>
+<text x="1069.4" y="294.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" font-weight="bold" fill="#1f2328" text-anchor="middle">IntentClassifier</text>
+<rect x="980.4" y="318.0" width="178.0" height="32.0" rx="6" fill="#ffffff" stroke="#d1553a" stroke-width="1.8"/>
+<text x="1069.4" y="338.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" font-weight="bold" fill="#1f2328" text-anchor="middle">KnowledgeAssistant</text>
+<rect x="980.4" y="362.0" width="178.0" height="32.0" rx="6" fill="#ffffff" stroke="#d1553a" stroke-width="1.8"/>
+<text x="1069.4" y="382.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" font-weight="bold" fill="#1f2328" text-anchor="middle">SymptomTriage</text>
+<rect x="980.4" y="406.0" width="178.0" height="32.0" rx="6" fill="#ffffff" stroke="#d1553a" stroke-width="1.8"/>
+<text x="1069.4" y="426.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" font-weight="bold" fill="#1f2328" text-anchor="middle">BookingAssistant</text>
+<rect x="980.4" y="450.0" width="178.0" height="32.0" rx="6" fill="#ffffff" stroke="#d1553a" stroke-width="1.8"/>
+<text x="1069.4" y="470.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" font-weight="bold" fill="#1f2328" text-anchor="middle">MedicationAssistant</text>
+<rect x="980.4" y="494.0" width="178.0" height="32.0" rx="6" fill="#ffffff" stroke="#d1553a" stroke-width="1.8"/>
+<text x="1069.4" y="514.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" font-weight="bold" fill="#1f2328" text-anchor="middle">ConsultationSummarizer</text>
+<rect x="980.4" y="538.0" width="178.0" height="32.0" rx="6" fill="#ffffff" stroke="#d1553a" stroke-width="1.8"/>
+<text x="1069.4" y="558.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" font-weight="bold" fill="#1f2328" text-anchor="middle">TurnTracer</text>
+<text x="974.4" y="578.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="1" font-weight="normal" fill="#1f2328" text-anchor="start"></text>
+<rect x="980.4" y="600.0" width="178.0" height="32.0" rx="6" fill="#ffffff" stroke="#d1553a" stroke-width="1.8"/>
+<text x="1069.4" y="620.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="12" font-weight="bold" fill="#1f2328" text-anchor="middle">ClinicRepository</text>
+<path d="M972.4000000000001,274 L966.4000000000001,274 L966.4000000000001,570 L972.4000000000001,570" fill="none" stroke="#d1553a" stroke-width="1.2"/>
+<text x="960.4000000000001" y="422.0" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#d1553a" text-anchor="middle" transform="rotate(-90 960.4000000000001 422.0)">AiPorts (gom 7 port AI)</text>
+<rect x="1205.0" y="120.0" width="365.0" height="272.0" rx="10" fill="#fdebe7" stroke="#d1553a" stroke-width="1.5"/>
+<text x="1215.0" y="143.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="14" font-weight="bold" fill="#1f2328" text-anchor="start">langchain  (LangChain4j 1.23)</text>
+<text x="1215.0" y="163.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">LangChainAi.build: bọc AiServices thành AiPorts</text>
+<text x="1215.0" y="180.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  FaqService · IntentRouterService</text>
+<text x="1215.0" y="197.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  SymptomExtractorService · TriageClassifierService</text>
+<text x="1215.0" y="214.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  SummarizerService · AgentService (đặt lịch, thuốc)</text>
+<text x="1215.0" y="231.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">Tools (@Tool): BookingTools · ProfileTools</text>
+<text x="1215.0" y="248.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  MedicationTools  ⇢ gọi ClinicRepository</text>
+<text x="1215.0" y="265.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">KnowledgeBase: RAG, embedding + EmbeddingStore</text>
+<text x="1215.0" y="282.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">Memory: MessageWindowChatMemory (+ JDBC store)</text>
+<text x="1215.0" y="299.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">Guardrails: RedFlagInput, MedicalSafetyOutput</text>
+<text x="1215.0" y="316.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">ModelCallTracer: TurnTracer + ChatModelListener</text>
+<text x="1215.0" y="333.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">structured output: record Java → case class</text>
+<text x="1215.0" y="350.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#57606a" text-anchor="start" font-style="italic">→ Anthropic Claude hoặc Ollama (ChatModel)</text>
+<text x="1215.0" y="367.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#57606a" text-anchor="start" font-style="italic">→ all-MiniLM-L6-v2 (ONNX) hoặc Ollama embedding</text>
+<text x="1215.0" y="384.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#57606a" text-anchor="start" font-style="italic">→ pgvector khi STORAGE=postgres</text>
+<path d="M1158.4,290.0 C1183.4,290.0 1180,160.0 1203,160.0" fill="none" stroke="#d1553a" stroke-width="1.6" marker-end="url(#ah-d1553a)"/>
+<path d="M1158.4,334.0 C1183.4,334.0 1180,192.0 1203,192.0" fill="none" stroke="#d1553a" stroke-width="1.6" marker-end="url(#ah-d1553a)"/>
+<path d="M1158.4,378.0 C1183.4,378.0 1180,224.0 1203,224.0" fill="none" stroke="#d1553a" stroke-width="1.6" marker-end="url(#ah-d1553a)"/>
+<path d="M1158.4,422.0 C1183.4,422.0 1180,256.0 1203,256.0" fill="none" stroke="#d1553a" stroke-width="1.6" marker-end="url(#ah-d1553a)"/>
+<path d="M1158.4,466.0 C1183.4,466.0 1180,288.0 1203,288.0" fill="none" stroke="#d1553a" stroke-width="1.6" marker-end="url(#ah-d1553a)"/>
+<path d="M1158.4,510.0 C1183.4,510.0 1180,320.0 1203,320.0" fill="none" stroke="#d1553a" stroke-width="1.6" marker-end="url(#ah-d1553a)"/>
+<path d="M1158.4,554.0 C1183.4,554.0 1180,352.0 1203,352.0" fill="none" stroke="#d1553a" stroke-width="1.6" marker-end="url(#ah-d1553a)"/>
+<rect x="1205.0" y="414.0" width="365.0" height="102.0" rx="10" fill="#fdebe7" stroke="#d1553a" stroke-width="1.5"/>
+<text x="1215.0" y="437.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="14" font-weight="bold" fill="#1f2328" text-anchor="start">Lưu trữ (STORAGE=memory | postgres)</text>
+<text x="1215.0" y="457.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">domain/inmemory: InMemoryClinicRepository</text>
+<text x="1215.0" y="474.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">backend/persistence: PostgresClinicRepository</text>
+<text x="1215.0" y="491.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  (JDBC thuần, schema.sql tự chạy khi khởi động)</text>
+<text x="1215.0" y="508.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#57606a" text-anchor="start" font-style="italic">→ Postgres (docker compose)</text>
+<path d="M1158.4,616.0 C1183.4,616.0 1180,465.0 1203,465.0" fill="none" stroke="#d1553a" stroke-width="1.6" marker-end="url(#ah-d1553a)"/>
+<path d="M1205,332 C1175,332 1196.4,624.0 1160.4,624.0" fill="none" stroke="#d1553a" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah-d1553a)"/>
+<rect x="30.0" y="240.0" width="330.0" height="102.0" rx="10" fill="#e6f6ea" stroke="#2f9e57" stroke-width="1.5"/>
+<text x="40.0" y="263.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="14" font-weight="bold" fill="#1f2328" text-anchor="start">frontend  (HTML + JS thuần, Tailwind CDN)</text>
+<text x="40.0" y="283.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">index.html: bệnh nhân chat với trợ lý</text>
+<text x="40.0" y="300.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">doctor.html: bác sĩ xem lịch hẹn + SOAP</text>
+<text x="40.0" y="317.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">graph.html: sơ đồ graph + panel quan sát</text>
+<text x="40.0" y="334.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#57606a" text-anchor="start" font-style="italic">← người dùng trên trình duyệt</text>
+<rect x="30.0" y="378.0" width="330.0" height="136.0" rx="10" fill="#e6f6ea" stroke="#2f9e57" stroke-width="1.5"/>
+<text x="40.0" y="401.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="14" font-weight="bold" fill="#1f2328" text-anchor="start">backend/http  (http4s + circe)</text>
+<text x="40.0" y="421.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">ApiRoutes: POST /api/chat</text>
+<text x="40.0" y="438.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  POST /api/booking/decision</text>
+<text x="40.0" y="455.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  GET /api/patients/{id}/pending, /api/graph</text>
+<text x="40.0" y="472.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">  GET /api/patients, /api/appointments</text>
+<text x="40.0" y="489.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">StaticRoutes: phục vụ file của frontend</text>
+<text x="40.0" y="506.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">session theo cookie sid</text>
+<line x1="195.0" y1="344.0" x2="195.0" y2="375.0" stroke="#2f9e57" stroke-width="1.6" marker-end="url(#ah-2f9e57)"/>
+<text x="203.0" y="364.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="11" font-weight="normal" fill="#57606a" text-anchor="start">REST JSON</text>
+<path d="M360,406 C410,406 393.6,480.0 439.6,480.0" fill="none" stroke="#2f9e57" stroke-width="1.6" marker-end="url(#ah-2f9e57)"/>
+<rect x="30.0" y="544.0" width="330.0" height="85.0" rx="10" fill="#e6f6ea" stroke="#2f9e57" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="40.0" y="567.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="14" font-weight="bold" fill="#1f2328" text-anchor="start">test</text>
+<text x="40.0" y="587.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">backend e2e: ApiSpec, ChatbotSpec (FakeChatModel)</text>
+<text x="40.0" y="604.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">langgraph: GraphConversationSuite (port AI giả)</text>
+<text x="40.0" y="621.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">UI smoke: e2e/ui-smoke.js (Playwright)</text>
+<path d="M360,574 C410,574 393.6,492.0 439.6,492.0" fill="none" stroke="#2f9e57" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah-2f9e57)"/>
+<text x="30.0" y="655.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="11" font-weight="normal" fill="#57606a" text-anchor="start" font-style="italic">Ghi chú: ApiRoutes cũng đọc danh sách bệnh nhân / lịch hẹn</text>
+<text x="30.0" y="671.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="11" font-weight="normal" fill="#57606a" text-anchor="start" font-style="italic">trực tiếp qua port ClinicRepository.</text>
+<rect x="30.0" y="90.0" width="330.0" height="120.0" rx="10" fill="#ffffff" stroke="#8c959f" stroke-width="1"/>
+<text x="42.0" y="112.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="13" font-weight="bold" fill="#1f2328" text-anchor="start">Chú thích</text>
+<rect x="42.0" y="124.0" width="18.0" height="12.0" rx="3" fill="#e6f6ea" stroke="#2f9e57" stroke-width="1.5"/>
+<text x="68.0" y="135.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">adapter vào (driving): gọi lõi</text>
+<rect x="42.0" y="146.0" width="18.0" height="12.0" rx="3" fill="#fdebe7" stroke="#d1553a" stroke-width="1.5"/>
+<text x="68.0" y="157.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">adapter ra (driven): lõi gọi ra ngoài</text>
+<rect x="42.0" y="168.0" width="18.0" height="12.0" rx="3" fill="#fff4d6" stroke="#c98a00" stroke-width="1.5"/>
+<text x="68.0" y="179.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#1f2328" text-anchor="start">domain · xanh dương = điều phối (langgraph)</text>
+<text x="42.0" y="199.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#57606a" text-anchor="start" font-style="italic">~ chữ nghiêng xám: hệ thống bên ngoài</text>
+<rect x="30.0" y="905.0" width="1540.0" height="72.0" rx="10" fill="#f1ecff" stroke="#7a5bd6" stroke-width="1.5"/>
+<text x="48.0" y="932.0" font-family="'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace" font-size="15" font-weight="bold" fill="#1f2328" text-anchor="start">backend: Wiring.scala  (composition root)</text>
+<text x="48.0" y="954.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="13" font-weight="normal" fill="#1f2328" text-anchor="start">Main + AppConfig đọc biến môi trường (LLM_PROVIDER, EMBEDDING, STORAGE…); Wiring là nơi duy nhất biết mọi adapter và nối chúng vào port. DevServer thay ChatModel bằng FakeChatModel.</text>
+<text x="48.0" y="971.0" font-family="'Segoe UI', 'Helvetica Neue', Arial, 'Noto Sans', sans-serif" font-size="12" font-weight="normal" fill="#57606a" text-anchor="start">Chiều phụ thuộc sbt: backend → langgraph, langchain, frontend → domain. langgraph và langchain không biết nhau.</text>
+</svg>
