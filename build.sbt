@@ -40,6 +40,7 @@ lazy val langchain = project
     "dev.langchain4j" % "langchain4j"                               % lc4j,
     "dev.langchain4j" % "langchain4j-anthropic"                     % lc4j,
     "dev.langchain4j" % "langchain4j-ollama"                        % lc4j,
+    "dev.langchain4j" % "langchain4j-open-ai"                       % lc4j,
     "dev.langchain4j" % "langchain4j-pgvector"                      % lc4jBeta,
     "dev.langchain4j" % "langchain4j-embeddings-all-minilm-l6-v2-q" % lc4jBeta,
     munit

@@ -14,8 +14,12 @@ object AppConfig:
 
   def fromEnv(): AppConfig =
     val provider = env("LLM_PROVIDER").map(_.toLowerCase) match
-      case Some("ollama") => LlmProvider.Ollama
-      case _              => LlmProvider.Anthropic
+      case Some("ollama")                     => LlmProvider.Ollama
+      case Some("openai")                     => LlmProvider.OpenAi
+      case Some(_)                            => LlmProvider.Anthropic
+      // Không set LLM_PROVIDER: chỉ có OPENAI_API_KEY thì tự chọn OpenAI
+      case None if env("ANTHROPIC_API_KEY").isEmpty && env("OPENAI_API_KEY").nonEmpty => LlmProvider.OpenAi
+      case None                               => LlmProvider.Anthropic
     val embedding = env("EMBEDDING").map(_.toLowerCase) match
       case Some(s) if s.startsWith("ollama:") => EmbeddingChoice.Ollama(s.stripPrefix("ollama:"))
       case _                                  => EmbeddingChoice.Local
@@ -33,6 +37,9 @@ object AppConfig:
         provider = provider,
         anthropicApiKey = env("ANTHROPIC_API_KEY"),
         anthropicModel = env("ANTHROPIC_MODEL").getOrElse("claude-sonnet-5-5"),
+        openAiApiKey = env("OPENAI_API_KEY"),
+        openAiModel = env("OPENAI_MODEL").getOrElse("gpt-4.1-mini"),
+        openAiBaseUrl = env("OPENAI_BASE_URL"),
         ollamaBaseUrl = env("OLLAMA_BASE_URL").getOrElse("http://localhost:11434"),
         ollamaModel = env("OLLAMA_MODEL").getOrElse("qwen2.5:7b"),
         embedding = embedding

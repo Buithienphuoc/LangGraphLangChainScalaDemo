@@ -10,12 +10,12 @@ import org.http4s.Status
   */
 class LiveChatbotSpec extends munit.FunSuite:
   override val munitTimeout = scala.concurrent.duration.Duration(300, "s")
-  private val enabled = sys.env.get("ANTHROPIC_API_KEY").exists(_.nonEmpty)
+  private val enabled = Seq("ANTHROPIC_API_KEY", "OPENAI_API_KEY").exists(k => sys.env.get(k).exists(_.nonEmpty))
 
   private lazy val t = TestApp(Wiring(AppConfig.fromEnv().copy(storage = Storage.Memory)))
 
   private def live(name: String)(body: => Unit): Unit =
-    test(name) { assume(enabled, "không có ANTHROPIC_API_KEY, bỏ qua bộ live"); body }
+    test(name) { assume(enabled, "không có ANTHROPIC_API_KEY/OPENAI_API_KEY, bỏ qua bộ live"); body }
 
   extension (r: Resp)
     def reply  = r.str("turn", "reply")

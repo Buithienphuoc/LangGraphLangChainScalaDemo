@@ -2,7 +2,7 @@ package demo.health.langchain
 
 /** Cấu hình phần AI, đọc từ biến môi trường ở module web. */
 enum LlmProvider:
-  case Anthropic, Ollama
+  case Anthropic, OpenAi, Ollama
 
 enum EmbeddingChoice:
   /** all-MiniLM-L6-v2 (quantized) chạy in-process bằng ONNX, không cần mạng hay API key. */
@@ -14,6 +14,9 @@ final case class AiConfig(
     provider: LlmProvider,
     anthropicApiKey: Option[String],
     anthropicModel: String,
+    openAiApiKey: Option[String],
+    openAiModel: String,
+    openAiBaseUrl: Option[String],
     ollamaBaseUrl: String,
     ollamaModel: String,
     embedding: EmbeddingChoice
