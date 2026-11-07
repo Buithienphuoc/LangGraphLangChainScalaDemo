@@ -1,4 +1,4 @@
-# Phòng khám An Khang (phòng khám ảo dùng cho demo)
+# Phuoc's experiment clinic system (phòng khám ảo dùng cho demo)
 
 ## Giờ làm việc
 - Thứ Hai đến thứ Bảy: 7:30 đến 17:00.

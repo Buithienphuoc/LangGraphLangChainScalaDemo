@@ -20,7 +20,7 @@ class GraphConversationSuite extends munit.FunSuite:
     val (_, _, svc) = fixture()
     val r = svc.send("s", "BN002", "Phòng khám mở cửa mấy giờ?")
     assertEquals(r.path, List("guardrail", "router", "faq"))
-    assertEquals(r.sources, List("Phòng khám An Khang"))
+    assertEquals(r.sources, List("Phuoc's experiment clinic system"))
   }
 
   test("Triage nhiều lượt: lượt 1 hỏi thêm, lượt 2 router giữ luồng triage và phân loại") {
