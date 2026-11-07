@@ -36,7 +36,7 @@ class LiveChatbotSpec extends munit.FunSuite:
   live("LIVE-02 RAG: trả lời giờ làm việc có 7:30 và trích dẫn tài liệu phòng khám") {
     val r = ok(t.client().chat("BN002", "Phòng khám mở cửa mấy giờ?"))
     assert(r.reply.contains("7:30") || r.reply.contains("7h30"), r.reply)
-    assert(r.strs("turn", "sources").exists(_.contains("Phòng khám An Khang")), r.body)
+    assert(r.strs("turn", "sources").exists(_.contains("Phuoc's experiment clinic system")), r.body)
   }
 
   live("LIVE-03 RAG: câu hỏi không có trong tài liệu thì nói không biết, không bịa") {

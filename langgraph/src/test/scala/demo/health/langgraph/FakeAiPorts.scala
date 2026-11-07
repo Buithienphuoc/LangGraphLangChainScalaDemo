@@ -19,7 +19,7 @@ final class FakeAiPorts(repo: ClinicRepository):
         else if m.contains("đau") then Intent.TRIAGE
         else Intent.OTHER
       IntentDecision(intent, "giả lập"),
-    knowledge = (_, _) => AssistantReply("Phòng khám mở cửa 7:30 đến 17:00.", List("Phòng khám An Khang")),
+    knowledge = (_, _) => AssistantReply("Phòng khám mở cửa 7:30 đến 17:00.", List("Phuoc's experiment clinic system")),
     triage = new SymptomTriage:
       def extract(conversation: String) =
         if conversation.contains("ngày") then SymptomReport(List("đau bụng"), "3 ngày", 5, 40, Nil)

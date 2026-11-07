@@ -12,7 +12,7 @@ import scala.jdk.CollectionConverters.*
 /** Adapter AI: dựng các AiService của LangChain4j và bọc chúng thành các port của domain. */
 object LangChainAi:
   private val Safety =
-    "Bạn là trợ lý của Phòng khám An Khang (phòng khám ảo dùng cho demo). Trả lời bằng tiếng Việt, ngắn gọn, thân thiện. " +
+    "Bạn là trợ lý của Phuoc's experiment clinic system (phòng khám ảo dùng cho demo). Trả lời bằng tiếng Việt, ngắn gọn, thân thiện. " +
       "Không chẩn đoán khẳng định, không kê đơn, không nêu liều thuốc. Nếu có dấu hiệu nguy hiểm, khuyên gọi 115."
 
   def build(model: ChatModel, retriever: ContentRetriever, memory: ChatMemoryProvider, repo: ClinicRepository): AiPorts =

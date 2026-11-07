@@ -28,7 +28,7 @@ export function header(active) {
     `<a href="${href}" class="px-3 py-1.5 rounded-md text-sm font-medium ${key === active ? "bg-white text-teal-700" : "text-white hover:bg-teal-600"}">${label}</a>`;
   return `
   <header class="bg-teal-700"><div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4 flex-wrap">
-    <div class="text-white font-semibold text-lg mr-4">🩺 Phòng khám An Khang
+    <div class="text-white font-semibold text-lg mr-4">🩺 Phuoc's experiment clinic system
       <span class="text-teal-200 text-sm font-normal">demo LangChain4j + LangGraph4j</span></div>
     <nav class="flex gap-2">${link("/", "Trợ lý", "chat")}${link("/doctor", "Trang bác sĩ", "doctor")}${link("/graph", "Sơ đồ graph", "graph")}</nav>
   </div></header>
