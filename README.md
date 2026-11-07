@@ -56,6 +56,7 @@ ANTHROPIC_MODEL=claude-sonnet-5-5   # muốn rẻ hơn: claude-haiku-5-5
 # PORT=8081
 # STORAGE=memory
 ```
+Hoặc với OpenAI: `LLM_PROVIDER=openai`, `OPENAI_API_KEY=sk-...`, `OPENAI_MODEL=gpt-4.1-mini`.
 Hoặc với Ollama (offline, không cần key): `LLM_PROVIDER=ollama`, `OLLAMA_MODEL=qwen2.5:7b` (chạy `ollama pull qwen2.5:7b` trước).
 
 Ghi chú về cú pháp: mỗi dòng một `KEY=value`, không dấu cách quanh `=`, không bọc giá trị trong ngoặc kép.
@@ -122,14 +123,14 @@ cp .env.example .env   # điền ANTHROPIC_API_KEY; docker compose tự đọc .
 docker compose up --build
 ```
 Schema (`backend/src/main/resources/schema.sql`) tự chạy khi app khởi động với `STORAGE=postgres`, và dữ liệu giả được seed nếu DB còn trống.
-Lưu ý: `docker-compose.yml` và `Dockerfile` đang map cổng 8080, nên khi chạy Docker thì đặt `PORT=8080` trong `.env` hoặc sửa hai file đó.
 
 ### Biến môi trường
 
 | Biến môi trường | Mặc định | Ý nghĩa |
 |---|---|---|
-| `LLM_PROVIDER` | `anthropic` | `anthropic` hoặc `ollama` |
+| `LLM_PROVIDER` | `anthropic` (hoặc `openai` nếu chỉ có `OPENAI_API_KEY`) | `anthropic`, `openai` hoặc `ollama` |
 | `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` | , `claude-sonnet-5-5` | |
+| `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL` | , `gpt-4.1-mini`, (mặc định của OpenAI) | `OPENAI_BASE_URL` cho API tương thích OpenAI |
 | `OLLAMA_BASE_URL`, `OLLAMA_MODEL` | `http://localhost:11434`, `qwen2.5:7b` | |
 | `EMBEDDING` | `local` | `local` = all-MiniLM-L6-v2 in-process; `ollama:<model>` ví dụ `ollama:bge-m3` |
 | `STORAGE` | `memory` | `memory` hoặc `postgres` (DevServer luôn dùng `memory`) |
@@ -202,7 +203,7 @@ sbt test
     `ApiRoutes.scala`/`StaticRoutes.scala` và fail nếu có route chưa được gọi hoặc có phản hồi 5xx.
   - `e2e/ChatbotSpec`: 29 case gửi prompt qua `/api/chat`: router, RAG có trích dẫn, triage nhiều lượt, red flag,
     guardrail, đặt lịch interrupt/resume, thuốc, tách thread, SOAP, trace.
-  - `e2e/LiveChatbotSpec`: 8 case với Claude thật, tự bỏ qua khi không có `ANTHROPIC_API_KEY`:
+  - `e2e/LiveChatbotSpec`: 8 case với Claude thật, tự bỏ qua khi không có `ANTHROPIC_API_KEY` hoặc `OPENAI_API_KEY`:
     `ANTHROPIC_API_KEY=sk-ant-... sbt "backend/testOnly *LiveChatbotSpec"`.
 - UI smoke (Playwright, 8 case): chạy DevServer rồi `node e2e/ui-smoke.js http://localhost:8081`.
 

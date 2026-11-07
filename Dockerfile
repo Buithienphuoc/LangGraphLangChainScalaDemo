@@ -11,5 +11,5 @@ RUN sbt -batch backend/assembly
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /src/backend/target/scala-3.3.6/healthcare-demo.jar app.jar
-EXPOSE 8080
+EXPOSE 8081
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -16,13 +16,15 @@ services:
     build: .
     depends_on:
       postgres: { condition: service_healthy }
-    ports: ["8080:8080"]
+    ports: ["8081:8081"]
     environment:
       STORAGE: postgres
       DB_HOST: postgres
       LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5-5}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:7b}
       EMBEDDING: ${EMBEDDING:-local}
