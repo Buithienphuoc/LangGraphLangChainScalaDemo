@@ -160,13 +160,15 @@ Lưu ý: `docker-compose.yml` và `Dockerfile` đang map cổng 8080, nên khi c
 
 Cách đọc sơ đồ (mũi tên là chiều gọi):
 
-- **Lõi (lục giác)** gồm `domain` (model, quy tắc RedFlags/DrugInteractions và các port) cùng phần điều phối `langgraph`.
-  Lõi chỉ biết các trait trong `domain/port`, không biết LangChain4j, http4s hay JDBC.
+- **Lõi (lục giác) chỉ có `domain`**: model, quy tắc (RedFlags, DrugInteractions) và các port (trait). `domain` không khai
+  báo `dependsOn` nào và không có thư viện ngoài, nên không thể import LangGraph4j, LangChain4j, http4s hay JDBC.
 - **Port vào (bên trái)**: `ConversationUseCase`. Frontend gọi REST vào `backend/http` (`ApiRoutes`), rồi `ApiRoutes` gọi
-  port này; `GraphConversationService` trong `langgraph` cài đặt nó bằng một graph LangGraph4j. Test e2e gọi vào cùng port.
+  port này. Test e2e gọi vào cùng port.
+- **`langgraph` là adapter bên ngoài lõi (phía dưới)**: `GraphConversationService` cài đặt port `ConversationUseCase` bằng
+  một graph LangGraph4j, và graph gọi ra các port ra của domain. Module này chỉ `dependsOn(domain)`, không phụ thuộc
+  `langchain`, nên test được bằng port AI giả viết tay.
 - **Port ra (bên phải)**: 7 port AI (gom trong `AiPorts`) do module `langchain` cài đặt bằng LangChain4j, và `ClinicRepository`
   có hai cách cài đặt (in-memory hoặc Postgres). Tool `@Tool` của `langchain` cũng đi qua `ClinicRepository`.
-- **`langgraph` không phụ thuộc `langchain`**: graph chỉ gọi port, nên test được bằng port AI giả viết tay.
 - **`backend/Wiring.scala`** là composition root, nơi duy nhất chọn adapter nào cắm vào port nào. Đổi Claude sang Ollama,
   hay in-memory sang Postgres, chỉ là đổi cấu hình ở đây.
 
