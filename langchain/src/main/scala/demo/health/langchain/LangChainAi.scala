@@ -7,6 +7,7 @@ import dev.langchain4j.memory.chat.ChatMemoryProvider
 import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.rag.content.retriever.ContentRetriever
 import dev.langchain4j.service.{AiServices, Result}
+import dev.langchain4j.service.tool.{ToolArgumentsErrorHandler, ToolExecutionErrorHandler}
 import scala.jdk.CollectionConverters.*
 
 /** Adapter AI: dựng các AiService của LangChain4j và bọc chúng thành các port của domain. */
@@ -38,7 +39,10 @@ object LangChainAi:
       .chatModel(model)
       .chatMemoryProvider(memory)
       .tools(BookingTools(repo, inbox))
-      .maxSequentialToolsInvocations(8)
+      .maxToolCallingRoundTrips(8)
+      // LLM gửi sai tham số: báo lỗi cho LLM để nó gọi lại; tool ném exception: dừng, không lộ chi tiết nội bộ cho LLM
+      .toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm())
+      .toolExecutionErrorHandler(ToolExecutionErrorHandler.failInvocationUnlessVisibleToLlm())
       .systemMessageProvider(m => withProfile(Safety + " Bạn phụ trách đặt lịch khám. Quy trình: xác định chuyên khoa, " +
         "tìm bác sĩ (findDoctors), xem lịch trống (getAvailableSlots), hỏi bệnh nhân chọn giờ nếu chưa chọn, rồi gọi " +
         "proposeBooking. Không bao giờ nói lịch đã được đặt xong: bệnh nhân phải bấm xác nhận. Ngày hôm nay: " +
@@ -50,6 +54,8 @@ object LangChainAi:
       .chatModel(model)
       .chatMemoryProvider(memory)
       .tools(MedicationTools(repo), ProfileTools(repo))
+      .toolArgumentsErrorHandler(ToolArgumentsErrorHandler.sendExceptionMessageToLlm())
+      .toolExecutionErrorHandler(ToolExecutionErrorHandler.failInvocationUnlessVisibleToLlm())
       .systemMessageProvider(m => withProfile(Safety + " Bạn phụ trách câu hỏi về thuốc. Dùng checkInteractions để " +
         "kiểm tra tương tác, dùng updatePatientProfile khi bệnh nhân báo dị ứng hoặc thuốc mới. Luôn nhắc rằng bảng " +
         "tương tác chỉ là dữ liệu mẫu và cần hỏi bác sĩ, dược sĩ.")(m))

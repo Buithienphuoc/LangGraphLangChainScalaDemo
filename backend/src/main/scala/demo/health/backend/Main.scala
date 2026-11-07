@@ -5,7 +5,6 @@ import com.comcast.ip4s.*
 import demo.health.backend.http.{ApiRoutes, Session, StaticRoutes}
 import org.http4s.HttpApp
 import org.http4s.ember.server.EmberServerBuilder
-import org.http4s.server.Router
 import org.slf4j.LoggerFactory
 import scala.concurrent.duration.*
 
