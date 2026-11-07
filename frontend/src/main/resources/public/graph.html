@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sơ đồ graph</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <style>.hidden{display:none}</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+<div id="header"></div>
+<main class="max-w-7xl mx-auto px-4 py-6">
+  <h1 class="text-xl font-semibold mb-1">Supervisor graph</h1>
+  <p class="text-sm text-slate-500 mb-4">Sơ đồ do LangGraph4j tự sinh từ định nghĩa graph (<code>getGraph(GraphRepresentation.Type.MERMAID)</code>).
+    Graph dừng trước node <code>confirm_booking</code> để chờ người dùng xác nhận.</p>
+  <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 overflow-x-auto"><pre id="diagram" class="mermaid"></pre></div>
+  <details class="mt-4"><summary class="cursor-pointer text-sm text-slate-600">Xem mã Mermaid</summary>
+    <pre id="source" class="text-xs bg-slate-100 p-3 rounded mt-2 overflow-x-auto"></pre></details>
+</main>
+<script type="module">
+  import { api, header } from "/assets/common.js";
+  document.getElementById("header").innerHTML = header("graph");
+  const { mermaid: src } = await api("/api/graph");
+  document.getElementById("source").textContent = src;
+  document.getElementById("diagram").textContent = src;
+  // Nạp mermaid động: nếu CDN không tới được (offline, mạng chặn) thì trang vẫn hiện mã Mermaid thay vì trắng trang.
+  try {
+    const { default: mermaid } = await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs");
+    mermaid.initialize({ startOnLoad: false });
+    await mermaid.run({ nodes: [document.getElementById("diagram")] });
+  } catch (e) {
+    console.warn("Không tải được mermaid từ CDN, hiển thị mã Mermaid dạng chữ", e);
+    document.getElementById("source").closest("details").open = true;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: healthcare
+      POSTGRES_USER: healthcare
+      POSTGRES_PASSWORD: healthcare
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U healthcare"]
+      interval: 5s
+      retries: 10
+
+  app:
+    build: .
+    depends_on:
+      postgres: { condition: service_healthy }
+    ports: ["8080:8080"]
+    environment:
+      STORAGE: postgres
+      DB_HOST: postgres
+      LLM_PROVIDER: ${LLM_PROVIDER:-anthropic}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-5-5}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:7b}
+      EMBEDDING: ${EMBEDDING:-local}
+
+volumes:
+  pgdata:

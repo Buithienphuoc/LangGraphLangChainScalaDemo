@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trợ lý phòng khám</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <style>.hidden{display:none}</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+<div id="header"></div>
+<main class="max-w-7xl mx-auto px-4 py-6 grid lg:grid-cols-3 gap-6">
+  <section class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-[75vh]">
+    <div class="px-4 py-3 border-b border-slate-200 flex items-center gap-3">
+      <span class="text-sm text-slate-500">Bạn đang là bệnh nhân</span>
+      <select id="patient" data-testid="patient-select" class="border border-slate-300 rounded-md text-sm px-2 py-1"></select>
+    </div>
+    <div id="messages" data-testid="messages" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+    <form id="chat-form" class="border-t border-slate-200 p-3 space-y-2">
+      <div id="suggestions" class="flex flex-wrap gap-2"></div>
+      <div class="flex gap-2">
+        <input id="msg" data-testid="chat-input" required autocomplete="off" placeholder="Nhập câu hỏi..."
+               class="flex-1 border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+        <button id="send" data-testid="chat-send" class="bg-teal-600 hover:bg-teal-700 disabled:opacity-50 text-white rounded-lg px-4 py-2 font-medium">Gửi</button>
+      </div>
+      <div id="thinking" class="hidden text-sm text-slate-500"><span class="animate-pulse">●</span> Graph đang chạy...</div>
+    </form>
+  </section>
+  <aside class="space-y-6">
+    <div id="profile" data-testid="profile" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 text-sm"></div>
+    <div id="trace" data-testid="trace" class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+      <h2 class="font-semibold mb-2">Panel quan sát</h2>
+      <p class="text-sm text-slate-500">Gửi một tin nhắn để xem graph đi qua những node nào, tool nào được gọi và mỗi lần gọi model tốn bao nhiêu token.</p>
+    </div>
+  </aside>
+</main>
+<script type="module" src="/assets/chat.js"></script>
+</body>
+</html>
