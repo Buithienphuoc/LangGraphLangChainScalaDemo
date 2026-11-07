@@ -17,28 +17,44 @@ guardrail) và **LangGraph4j** (graph workflow, rẽ nhánh, subgraph, checkpoin
 | Postgres / Docker | **Không cần.** Mặc định dữ liệu nằm trong RAM. |
 
 ```bash
-git clone https://github.com/Buithienphuoc/LangGraphLangChainScalaDemo.git
-cd LangGraphLangChainScalaDemo
+git clone https://github.com/Buithienphuoc/LangGraphLangChainScalaExperiment.git
+cd LangGraphLangChainScalaExperiment
 sbt compile        # kiểm tra build, tải thư viện
 ```
 
 Ứng dụng chạy ở **http://localhost:8081**. Frontend do backend phục vụ luôn, không cần start riêng.
 Đổi cổng bằng biến `PORT` (ví dụ cổng 8081 đang bị chiếm).
 
-### 2. Chạy với API giả (không cần API key)
+**Chọn model bằng `LLM_PROVIDER`.** Mọi model đều start cùng một cách (`sbt backend/run` hoặc Run Configuration `Main`),
+chỉ khác giá trị biến môi trường. Model được tạo trong `Models.chatModel` (`langchain/.../Models.scala`):
 
-Không cần cài đặt gì thêm: không API key, không file `.env`, không database. `DevServer` (nằm trong `backend/src/test`)
-lắp app với model giả (chính là `FakeChatModel.scala`, ở `langchain/src/test/scala/demo/health/langchain/FakeChatModel.scala`)
-thay cho LLM thật và luôn dùng storage in-memory.
+| `LLM_PROVIDER` | Model | Cần |
+|---|---|---|
+| `fake` | `FakeChatModel` (model tự viết, trả lời theo luật) | không cần gì |
+| `anthropic` (mặc định nếu không set) | Claude qua `AnthropicChatModel` | `ANTHROPIC_API_KEY` |
+| `ollama` | model chạy offline qua `OllamaChatModel` | cài Ollama |
 
+### 2. Chạy với model giả `LLM_PROVIDER=fake` (không cần API key)
+
+Không cần API key, không database. Chỉ cần đặt `LLM_PROVIDER=fake` rồi chạy như với model thật:
+
+macOS / Linux / Git Bash:
 ```bash
-sbt "backend/Test/runMain demo.health.backend.DevServer"
-# đợi log "Mở trình duyệt: http://localhost:8081" rồi mở trình duyệt
+LLM_PROVIDER=fake sbt backend/run
 ```
+Windows PowerShell:
+```powershell
+$env:LLM_PROVIDER="fake"; sbt backend/run
+```
+Hoặc dùng file `.env` như mục 3: file `.env.example` mặc định đã là `LLM_PROVIDER=fake`.
 
-**Model giả là gì?** Không phải LLM nào cả: đó là class tự viết (chính là `FakeChatModel.scala`) implement interface
-`ChatModel` của LangChain4j, nên với phần còn lại của app nó trông như Claude hay OpenAI. Nó đọc system message để biết
-agent nào đang gọi rồi trả lời theo luật:
+Đợi log `Mở trình duyệt: http://localhost:8081` rồi mở trình duyệt.
+
+**Model giả là gì?** Không phải LLM nào cả: đó là class tự viết (chính là `FakeChatModel.scala`, ở
+`langchain/src/main/scala/demo/health/langchain/FakeChatModel.scala`) implement interface `ChatModel` của LangChain4j,
+nên với phần còn lại của app nó trông như Claude hay Ollama. Nó đại diện cho các model tự customize: muốn thêm model
+khác, viết một class implement `ChatModel`, thêm một giá trị vào `LlmProvider` và một case trong `Models.chatModel`.
+Nó đọc system message để biết agent nào đang gọi rồi trả lời theo luật:
 
 | Agent | Model giả (`FakeChatModel.scala`) trả về |
 |---|---|
@@ -54,7 +70,7 @@ all-MiniLM-L6-v2 chạy in-process qua ONNX). Mỗi lần gọi model giả đư
 Vì vậy câu trả lời không thông minh, nhưng mọi node, tool, interrupt và panel quan sát đều chạy thật. Thử các câu:
 `Phòng khám mở cửa mấy giờ?` · `Tôi bị đau đầu 2 ngày` · `Tôi muốn đặt lịch khám` · `Tôi uống aspirin với ibuprofen được không?`
 
-> Lỗi `Thiếu ANTHROPIC_API_KEY` nghĩa là bạn đang chạy `sbt backend/run` (luôn dùng LLM thật). Dùng lệnh `DevServer` ở trên.
+> Lỗi `Thiếu ANTHROPIC_API_KEY` nghĩa là `LLM_PROVIDER` chưa được set (mặc định là `anthropic`). Đặt `LLM_PROVIDER=fake` như trên.
 > Lỗi `Address already in use` nghĩa là cổng đang bị chiếm: tắt app cũ hoặc đặt `PORT=8082`.
 > Chữ tiếng Việt trong log bị lỗi font (`─æ├ú index`) trên Windows: console đang dùng code page 437. Chạy `chcp 65001`
 > trước lệnh sbt (hoặc dùng Windows Terminal với font hỗ trợ Unicode). App vẫn ghi log đúng UTF-8.
@@ -66,7 +82,7 @@ Vì vậy câu trả lời không thông minh, nhưng mọi node, tool, interrup
 ```bash
 cp .env.example .env          # Windows: copy .env.example .env
 ```
-Sửa `.env`, ví dụ với Claude:
+Sửa `.env`, đổi `LLM_PROVIDER` sang model thật, ví dụ với Claude:
 ```dotenv
 LLM_PROVIDER=anthropic
 ANTHROPIC_API_KEY=sk-ant-...        # lấy ở https://console.anthropic.com → Settings → API Keys
@@ -107,25 +123,18 @@ File → Project Structure → Project SDK nếu được hỏi). Đợi thanh "
 
 **Cài plugin EnvFile** (để Run Configuration đọc file `.env`): Settings → Plugins → Marketplace → tìm **EnvFile** → Install → restart IDE.
 
-**Tạo cấu hình chạy với API thật:** Run → Edit Configurations… → `+` → **Application**
+**Tạo Run Configuration** (một cấu hình dùng cho mọi model): Run → Edit Configurations… → `+` → **Application**
 
 | Ô | Giá trị |
 |---|---|
-| Name | `Backend (API thật)` |
+| Name | `Backend` |
 | JDK / JRE | 21 |
 | Module (`-cp`) | `backend` |
 | Main class | `demo.health.backend.Main` |
 | Working directory | `$PROJECT_DIR$` |
 | Tab **EnvFile** | tick **Enable EnvFile** → `+` → **.env file** → chọn `.env` ở thư mục gốc |
 
-**Tạo cấu hình chạy với API giả:** làm tương tự, không cần EnvFile:
-
-| Ô | Giá trị |
-|---|---|
-| Name | `DevServer (API giả)` |
-| Module (`-cp`) | `backend` |
-| Main class | `demo.health.backend.DevServer` |
-| Working directory | `$PROJECT_DIR$` |
+Muốn đổi model thì chỉ sửa `LLM_PROVIDER` trong `.env` (`fake`, `anthropic`, `ollama`) rồi chạy lại, không cần tạo cấu hình khác.
 
 Bấm ▶ (Run) hoặc 🐞 (Debug, đặt breakpoint được trong node của graph hay trong tool) rồi mở http://localhost:8081.
 
@@ -146,11 +155,11 @@ Lưu ý: `docker-compose.yml` và `Dockerfile` đang map cổng 8080, nên khi c
 
 | Biến môi trường | Mặc định | Ý nghĩa |
 |---|---|---|
-| `LLM_PROVIDER` | `anthropic` | `anthropic` hoặc `ollama` |
+| `LLM_PROVIDER` | `anthropic` | `fake`, `anthropic` hoặc `ollama` |
 | `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` | , `claude-sonnet-5-5` | |
 | `OLLAMA_BASE_URL`, `OLLAMA_MODEL` | `http://localhost:11434`, `qwen2.5:7b` | |
 | `EMBEDDING` | `local` | `local` = all-MiniLM-L6-v2 in-process; `ollama:<model>` ví dụ `ollama:bge-m3` |
-| `STORAGE` | `memory` | `memory` hoặc `postgres` (DevServer luôn dùng `memory`) |
+| `STORAGE` | `memory` | `memory` hoặc `postgres` |
 | `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` | `localhost`, `5432`, `healthcare` × 3 | |
 | `PORT` | `8081` | |
 
@@ -222,7 +231,7 @@ sbt test
     guardrail, đặt lịch interrupt/resume, thuốc, tách thread, SOAP, trace.
   - `e2e/LiveChatbotSpec`: 8 case với Claude thật, tự bỏ qua khi không có `ANTHROPIC_API_KEY`:
     `ANTHROPIC_API_KEY=sk-ant-... sbt "backend/testOnly *LiveChatbotSpec"`.
-- UI smoke (Playwright, 8 case): chạy DevServer rồi `node e2e/ui-smoke.js http://localhost:8081`.
+- UI smoke (Playwright, 8 case): chạy app với `LLM_PROVIDER=fake` rồi `node e2e/ui-smoke.js http://localhost:8081`.
 
 ## Những điều rút ra khi dùng 2 thư viện Java từ Scala
 

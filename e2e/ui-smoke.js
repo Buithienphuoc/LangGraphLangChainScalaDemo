@@ -1,6 +1,6 @@
-// UI-01..UI-05: smoke test giao diện bằng Playwright, chạy trên DevServer (model giả).
-//   sbt "backend/Test/runMain demo.health.backend.DevServer" &   # cổng 8080
-//   node e2e/ui-smoke.js [http://localhost:8080]
+// UI-01..UI-05: smoke test giao diện bằng Playwright, chạy trên app với model giả (LLM_PROVIDER=fake).
+//   LLM_PROVIDER=fake sbt backend/run &   # cổng 8081
+//   node e2e/ui-smoke.js [http://localhost:8081]
 const { chromium } = require("playwright");
 const BASE = process.argv[2] || "http://localhost:8081";
 const results = [];

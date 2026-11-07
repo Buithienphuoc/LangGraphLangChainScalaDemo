@@ -15,6 +15,7 @@ object AppConfig:
   def fromEnv(): AppConfig =
     val provider = env("LLM_PROVIDER").map(_.toLowerCase) match
       case Some("ollama") => LlmProvider.Ollama
+      case Some("fake")   => LlmProvider.Fake
       case _              => LlmProvider.Anthropic
     val embedding = env("EMBEDDING").map(_.toLowerCase) match
       case Some(s) if s.startsWith("ollama:") => EmbeddingChoice.Ollama(s.stripPrefix("ollama:"))
