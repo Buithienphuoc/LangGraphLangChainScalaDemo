@@ -47,7 +47,7 @@ lazy val langchain = project
   // Model embedding ONNX nạp thư viện native (DJL tokenizers): mỗi JVM chỉ nạp được một lần,
   // nên test của từng module chạy trong JVM riêng.
   Test / fork := true,
-  Test / javaOptions ++= Seq("-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8"))
+  Test / javaOptions ++= quietJvmOpts)
 
 /** Điều phối: cài đặt use case hội thoại bằng LangGraph4j, chỉ dựa trên port của domain. */
 lazy val langgraph = project
@@ -57,6 +57,17 @@ lazy val langgraph = project
     "org.bsc.langgraph4j" % "langgraph4j-postgres-saver" % lg4j,
     munit
   ))
+
+/** Option cho JVM được fork (chạy app / test) để tắt cảnh báo của Java 22+:
+  *  - `--enable-native-access`: ONNX Runtime (embedding all-MiniLM) nạp thư viện native.
+  *  - `--sun-misc-unsafe-memory-access=allow`: Scala 3.3 dùng sun.misc.Unsafe cho lazy val (option chỉ có từ Java 23).
+  */
+lazy val quietJvmOpts: Seq[String] = {
+  val v = sys.props("java.specification.version").takeWhile(_ != '.').toInt
+  Seq("-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8") ++
+    (if (v >= 22) Seq("--enable-native-access=ALL-UNNAMED") else Nil) ++
+    (if (v >= 23) Seq("--sun-misc-unsafe-memory-access=allow") else Nil)
+}
 
 /** Giao diện tĩnh (HTML + JS + Tailwind CDN). Không có code Scala; backend phục vụ các file này. */
 lazy val frontend = project
@@ -77,7 +88,11 @@ lazy val backend = project
     ),
     Compile / run / fork       := true,
     Test / fork                := true, // xem ghi chú ở module langchain
-    Test / javaOptions ++= Seq("-Dfile.encoding=UTF-8", "-Dstdout.encoding=UTF-8"),
+    Compile / javaOptions ++= quietJvmOpts,
+    Test / javaOptions ++= quietJvmOpts,
+    // in thẳng stdout/stderr của JVM con, không để sbt gắn nhãn [error] cho mọi dòng stderr
+    Compile / run / outputStrategy := Some(StdoutOutput),
+    Test / run / outputStrategy    := Some(StdoutOutput),
     assembly / mainClass       := Some("demo.health.backend.Main"),
     assembly / assemblyJarName := "healthcare-demo.jar",
     assembly / assemblyMergeStrategy := {

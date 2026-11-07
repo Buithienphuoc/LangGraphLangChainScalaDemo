@@ -41,6 +41,9 @@ nhưng mọi node, tool, interrupt và panel quan sát đều chạy thật. Th�
 
 > Lỗi `Thiếu ANTHROPIC_API_KEY` nghĩa là bạn đang chạy `sbt backend/run` (luôn dùng LLM thật). Dùng lệnh `DevServer` ở trên.
 > Lỗi `Address already in use` nghĩa là cổng đang bị chiếm: tắt app cũ hoặc đặt `PORT=8082`.
+> Chữ tiếng Việt trong log bị lỗi font (`─æ├ú index`) trên Windows: console đang dùng code page 437. Chạy `chcp 65001`
+> trước lệnh sbt (hoặc dùng Windows Terminal với font hỗ trợ Unicode). App vẫn ghi log đúng UTF-8.
+> Cảnh báo `sun.misc.Unsafe` in ra từ `sbt-launch.jar` là của chính sbt khi chạy trên Java 23+, vô hại; dùng JDK 21 thì hết.
 
 ### 3. Chạy với API thật bằng command line + file `.env`
 
