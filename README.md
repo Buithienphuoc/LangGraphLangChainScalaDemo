@@ -28,15 +28,30 @@ sbt compile        # kiểm tra build, tải thư viện
 ### 2. Chạy với API giả (không cần API key)
 
 Không cần cài đặt gì thêm: không API key, không file `.env`, không database. `DevServer` (nằm trong `backend/src/test`)
-lắp app với `FakeChatModel` thay cho LLM thật và luôn dùng storage in-memory.
+lắp app với model giả (chính là `FakeChatModel.scala`, ở `langchain/src/test/scala/demo/health/langchain/FakeChatModel.scala`)
+thay cho LLM thật và luôn dùng storage in-memory.
 
 ```bash
 sbt "backend/Test/runMain demo.health.backend.DevServer"
 # đợi log "Mở trình duyệt: http://localhost:8081" rồi mở trình duyệt
 ```
 
-Model giả trả lời theo luật đơn giản (từ khoá "đặt lịch", "thuốc", "mở cửa", "đau"...), nên câu trả lời không thông minh,
-nhưng mọi node, tool, interrupt và panel quan sát đều chạy thật. Thử các câu:
+**Model giả là gì?** Không phải LLM nào cả: đó là class tự viết (chính là `FakeChatModel.scala`) implement interface
+`ChatModel` của LangChain4j, nên với phần còn lại của app nó trông như Claude hay OpenAI. Nó đọc system message để biết
+agent nào đang gọi rồi trả lời theo luật:
+
+| Agent | Model giả (`FakeChatModel.scala`) trả về |
+|---|---|
+| Router | JSON intent theo từ khoá: "đặt lịch" → `BOOKING`, "thuốc" → `MEDICATION`, "mở cửa" → `FAQ`, "đau" → `TRIAGE`, còn lại `OTHER` |
+| Triage | Câu có chữ "ngày" → triệu chứng đầy đủ; không có → hỏi lại ("Bạn bị bao lâu rồi?") để luồng nhiều lượt chạy |
+| Đặt lịch | Giả lập tool calling thật: `findDoctors` → `getAvailableSlots` → `proposeBooking`, rồi graph dừng ở `interruptBefore` chờ bấm xác nhận |
+| Thuốc | Gọi tool `checkInteractions`; lần đầu cố tình nêu liều ("400 mg") để output guardrail bắt và reprompt |
+| Tóm tắt SOAP | JSON cố định |
+| FAQ / câu khác | Luôn "Phòng khám mở cửa từ 7:30 đến 17:00…" |
+
+Chỉ có LLM là giả: graph LangGraph4j, tool, memory, guardrail và RAG đều chạy thật (RAG vẫn dùng embedding thật
+all-MiniLM-L6-v2 chạy in-process qua ONNX). Mỗi lần gọi model giả được tính 100 token vào và 20 token ra để panel quan sát có số liệu.
+Vì vậy câu trả lời không thông minh, nhưng mọi node, tool, interrupt và panel quan sát đều chạy thật. Thử các câu:
 `Phòng khám mở cửa mấy giờ?` · `Tôi bị đau đầu 2 ngày` · `Tôi muốn đặt lịch khám` · `Tôi uống aspirin với ibuprofen được không?`
 
 > Lỗi `Thiếu ANTHROPIC_API_KEY` nghĩa là bạn đang chạy `sbt backend/run` (luôn dùng LLM thật). Dùng lệnh `DevServer` ở trên.
