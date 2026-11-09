@@ -6,16 +6,13 @@ import demo.health.domain.port.*
 import demo.health.langchain.*
 import demo.health.langgraph.{Checkpoints, GraphConversationService}
 import dev.langchain4j.data.segment.TextSegment
-import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.store.embedding.EmbeddingStore
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore
 import dev.langchain4j.store.embedding.pgvector.PgVectorEmbeddingStore
 import org.slf4j.LoggerFactory
 
-/** Composition root: nơi DUY NHẤT biết mọi adapter và nối chúng vào các port.
-  * `chatModelOverride` chỉ dùng khi chạy thử với model giả (DevServer).
-  */
-final class Wiring(val cfg: AppConfig, chatModelOverride: Option[ChatModel] = None):
+/** Composition root: nơi DUY NHẤT biết mọi adapter và nối chúng vào các port. */
+final class Wiring(val cfg: AppConfig):
   private val log = LoggerFactory.getLogger(getClass)
 
   // ---- adapter lưu trữ
@@ -50,7 +47,7 @@ final class Wiring(val cfg: AppConfig, chatModelOverride: Option[ChatModel] = No
     case Storage.Memory   => Memory.inMemoryStore()
     case Storage.Postgres => JdbcChatMemoryStore(dataSource)
 
-  private val chatModel = chatModelOverride.getOrElse(Models.chatModel(cfg.ai, List(ModelCallTracer)))
+  private val chatModel = Models.chatModel(cfg.ai, List(ModelCallTracer))
 
   val ai: AiPorts =
     LangChainAi.build(chatModel, KnowledgeBase.retriever(embeddingStore, embeddingModel), Memory.provider(memoryStore), repo)

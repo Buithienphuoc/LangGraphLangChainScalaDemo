@@ -3,7 +3,7 @@ package demo.health.backend.e2e
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import demo.health.backend.{AppConfig, Main, Storage, Wiring}
-import demo.health.langchain.FakeChatModel
+import demo.health.langchain.LlmProvider
 import io.circe.Json
 import io.circe.parser.parse
 import org.http4s.*
@@ -21,7 +21,7 @@ final case class Resp(status: Status, body: String, headers: Headers):
 /** Ứng dụng thật (đủ route, middleware session, graph, LangChain4j) với model giả và dữ liệu in-memory.
   * Gọi thẳng HttpApp, không qua socket, nên nhanh và không xung đột cổng.
   */
-final class TestApp(mk: => Wiring = Wiring(AppConfig.fromEnv().copy(storage = Storage.Memory), Some(FakeChatModel()))):
+final class TestApp(mk: => Wiring = Wiring(TestApp.fakeConfig)):
   val wiring: Wiring  = mk
   val app: HttpApp[IO] = Main.httpApp(wiring)
 
@@ -56,5 +56,10 @@ final class Browser(t: TestApp):
     post("/api/booking/decision", s"""{"patientId":"$patientId","confirm":$confirm}""")
 
 object TestApp:
+  /** Cấu hình như khi deploy với `LLM_PROVIDER=fake` và `STORAGE=memory`. */
+  def fakeConfig: AppConfig =
+    val c = AppConfig.fromEnv()
+    c.copy(storage = Storage.Memory, ai = c.ai.copy(provider = LlmProvider.Fake))
+
   /** Một instance dùng chung cho toàn bộ bộ test (khởi tạo embedding + index RAG mất vài giây). */
   lazy val shared: TestApp = TestApp()

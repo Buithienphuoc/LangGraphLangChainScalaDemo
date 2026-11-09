@@ -10,13 +10,14 @@ import dev.langchain4j.model.output.TokenUsage
 import java.util.concurrent.atomic.AtomicInteger
 import scala.jdk.CollectionConverters.*
 
-/** ChatModel giả, trả lời theo luật để test adapter mà không tốn token và không cần mạng.
-  * Backend cũng dùng nó trong DevServer để chạy thử giao diện khi chưa có API key.
+/** Model tự viết (custom), không gọi nhà cung cấp nào: trả lời theo luật, không tốn token, không cần mạng hay API key.
+  * Chọn bằng `LLM_PROVIDER=fake`, tạo trong `Models.chatModel` như mọi model khác. Dùng để chạy thử giao diện, luồng
+  * graph, và trong test. Muốn thêm model tự viết khác: implement `ChatModel` như class này rồi thêm một case vào `Models`.
   */
-final class FakeChatModel extends ChatModel:
+final class FakeChatModel(listenerList: List[ChatModelListener] = List(ModelCallTracer)) extends ChatModel:
   val medicationAnswers = AtomicInteger(0)
 
-  override def listeners(): java.util.List[ChatModelListener] = java.util.List.of(ModelCallTracer)
+  override def listeners(): java.util.List[ChatModelListener] = listenerList.asJava
 
   override def doChat(request: ChatRequest): ChatResponse =
     val msgs   = request.messages().asScala.toList

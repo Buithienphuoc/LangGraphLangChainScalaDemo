@@ -3,6 +3,8 @@ package demo.health.langchain
 /** Cấu hình phần AI, đọc từ biến môi trường ở module web. */
 enum LlmProvider:
   case Anthropic, Ollama
+  /** Model tự viết, không cần API key (xem `FakeChatModel`). */
+  case Fake
 
 enum EmbeddingChoice:
   /** all-MiniLM-L6-v2 (quantized) chạy in-process bằng ONNX, không cần mạng hay API key. */

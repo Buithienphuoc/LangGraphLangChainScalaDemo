@@ -14,7 +14,7 @@ object Models:
   def chatModel(cfg: AiConfig, listeners: List[ChatModelListener]): ChatModel = cfg.provider match
     case LlmProvider.Anthropic =>
       val key = cfg.anthropicApiKey.getOrElse(
-        throw IllegalStateException("Thiếu ANTHROPIC_API_KEY. Đặt biến môi trường hoặc dùng LLM_PROVIDER=ollama."))
+        throw IllegalStateException("Thiếu ANTHROPIC_API_KEY. Đặt biến môi trường, hoặc dùng LLM_PROVIDER=fake (model giả, không cần key) / LLM_PROVIDER=ollama."))
       AnthropicChatModel.builder()
         .apiKey(key)
         .modelName(cfg.anthropicModel)
@@ -31,6 +31,9 @@ object Models:
         .timeout(Duration.ofSeconds(180))
         .listeners(listeners.asJava)
         .build()
+    case LlmProvider.Fake =>
+      // model tự viết: không gọi API nào nên không cần kiểm tra key
+      FakeChatModel(listeners)
 
   def embeddingModel(cfg: AiConfig): EmbeddingModel = cfg.embedding match
     case EmbeddingChoice.Local => AllMiniLmL6V2QuantizedEmbeddingModel()
