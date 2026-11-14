@@ -2,7 +2,6 @@ package demo.health.langchain
 
 import demo.health.domain.model.*
 import demo.health.domain.port.*
-import demo.health.langchain.structured as js
 import dev.langchain4j.memory.chat.ChatMemoryProvider
 import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.rag.content.retriever.ContentRetriever
@@ -75,18 +74,7 @@ object LangChainAi:
         val d = router.classify(msg)
         IntentDecision(Intent.valueOf(d.intent().name), Option(d.reason()).getOrElse("")),
       knowledge = (patientId, question) => toReply(faq.answer(MemoryIds.of(patientId, "faq"), question)),
-      triage = new SymptomTriage:
-        def extract(conversation: String): SymptomReport =
-          val r = extractor.extract(conversation)
-          SymptomReport(list(r.symptoms()), Option(r.duration()).getOrElse(""), r.severity(), r.age(), list(r.missingInfo()))
-        def classify(specialties: List[String], report: String): TriageResult =
-          val r = classifier.classify(specialties.mkString(", "), report)
-          val urgency = r.urgency() match
-            case js.Urgency.SELF_CARE       => Urgency.SelfCare
-            case js.Urgency.VISIT_THIS_WEEK => Urgency.VisitThisWeek
-            case _                          => Urgency.VisitSoon
-          TriageResult(urgency, r.specialty(), Option(r.explanation()).getOrElse(""), list(r.advice()))
-      ,
+      triage = LangChainSymptomTriage(extractor, classifier),
       booking = (patientId, message) =>
         val reply = toReply(booking.chat(MemoryIds.of(patientId, "booking"), message))
         BookingReply(reply, inbox.take(patientId)),

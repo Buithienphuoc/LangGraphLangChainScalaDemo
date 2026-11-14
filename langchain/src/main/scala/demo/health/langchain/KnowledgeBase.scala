@@ -11,15 +11,13 @@ import scala.jdk.CollectionConverters.*
 
 /** RAG (F1): nạp tài liệu mẫu, chia chunk, embed, lưu vào EmbeddingStore và tạo ContentRetriever. */
 object KnowledgeBase:
-  final case class Doc(docType: String, file: String, title: String, text: String)
-
-  def loadDocs(): List[Doc] =
+  def loadDocs(): List[KnowledgeDoc] =
     val cl = getClass.getClassLoader
     Source.fromResource("docs/index.txt", cl).getLines().map(_.trim).filter(_.nonEmpty).map { line =>
       val Array(docType, file) = line.split('|')
       val text  = Source.fromResource(s"docs/$file", cl).mkString
       val title = text.linesIterator.find(_.startsWith("# ")).map(_.drop(2).trim).getOrElse(file)
-      Doc(docType, file, title, text)
+      KnowledgeDoc(docType, file, title, text)
     }.toList
 
   /** Indexing: Document → chunk ~500 ký tự (chồng lấn 80) → embedding → store. Trả về số chunk. */

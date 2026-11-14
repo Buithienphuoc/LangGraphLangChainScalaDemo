@@ -4,14 +4,14 @@ import demo.health.domain.model.*
 import demo.health.domain.port.*
 import demo.health.langgraph.HealthState.*
 import org.bsc.langgraph4j.*
-import org.bsc.langgraph4j.checkpoint.{BaseCheckpointSaver, MemorySaver, PostgresSaver}
-import org.bsc.langgraph4j.serializer.std.ObjectStreamStateSerializer
+import org.bsc.langgraph4j.checkpoint.BaseCheckpointSaver
 import scala.jdk.CollectionConverters.*
 import scala.jdk.OptionConverters.*
 
 /** Cài đặt use case hội thoại (port vào của domain) bằng LangGraph4j.
   * Mỗi (phiên trình duyệt, bệnh nhân) là một threadId của checkpoint saver.
   */
+
 final class GraphConversationService(ai: AiPorts, repo: ClinicRepository, saver: BaseCheckpointSaver)
     extends ConversationUseCase:
   private val graph    = HealthGraph(ai, repo)
@@ -82,15 +82,3 @@ final class GraphConversationService(ai: AiPorts, repo: ClinicRepository, saver:
     )
 
   def diagram: String = graph.mermaid
-
-/** Chọn nơi lưu checkpoint của graph. */
-object Checkpoints:
-  def inMemory(): BaseCheckpointSaver = MemorySaver()
-
-  def postgres(host: String, port: Int, database: String, user: String, password: String): BaseCheckpointSaver =
-    PostgresSaver.builder()
-      .host(host).port(port).database(database).user(user).password(password)
-      .stateSerializer(ObjectStreamStateSerializer[HealthState](HealthState.factory(_)))
-      .createTables(true)
-      .build()
-      .asInstanceOf[BaseCheckpointSaver]

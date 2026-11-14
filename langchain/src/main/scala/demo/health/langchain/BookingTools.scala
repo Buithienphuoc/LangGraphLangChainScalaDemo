@@ -3,24 +3,10 @@ package demo.health.langchain
 import demo.health.domain.model.*
 import demo.health.domain.port.ClinicRepository
 import dev.langchain4j.agent.tool.{P, Tool, ToolMemoryId}
-import java.util.concurrent.ConcurrentHashMap
 
 /** Memory id có dạng "<patientId>:<agent>", ví dụ "BN001:booking". Tool lấy patientId từ đó
   * (qua @ToolMemoryId) thay vì để LLM tự khai, nên agent không thể thao tác trên hồ sơ người khác.
   */
-object MemoryIds:
-  def of(patientId: String, agent: String): String = s"$patientId:$agent"
-  def patientOf(memoryId: Any): String           = String.valueOf(memoryId).takeWhile(_ != ':')
-
-/** Nơi tool `proposeBooking` gửi đề xuất; adapter BookingAssistant lấy ra sau mỗi lượt. */
-final class ProposalInbox:
-  private val byPatient = ConcurrentHashMap[String, BookingProposal]()
-  def put(patientId: String, p: BookingProposal): Unit  = byPatient.put(patientId, p)
-  def take(patientId: String): Option[BookingProposal] = Option(byPatient.remove(patientId))
-
-// Lưu ý interop: Scala 3 không ghi tên tham số vào bytecode (không có MethodParameters như javac -parameters),
-// nên LangChain4j sẽ chỉ thấy arg0, arg1... Vì vậy mọi tham số tool đều khai báo @P(name = ..., value = ...).
-// Tương tự, annotation Java có nhiều thuộc tính phải ghi rõ `value = ...` khi dùng trong Scala.
 
 final class BookingTools(repo: ClinicRepository, inbox: ProposalInbox):
 
@@ -74,36 +60,3 @@ final class BookingTools(repo: ClinicRepository, inbox: ProposalInbox):
       @P(name = "appointmentId", value = "Mã lịch hẹn") appointmentId: String
   ): String =
     repo.cancel(MemoryIds.patientOf(memoryId), appointmentId).fold(identity, a => s"Đã huỷ lịch hẹn ${a.id}.")
-
-final class ProfileTools(repo: ClinicRepository):
-
-  @Tool(value = Array("Xem hồ sơ của bệnh nhân hiện tại: dị ứng, bệnh nền, thuốc đang dùng"))
-  def getPatientProfile(@ToolMemoryId memoryId: String): String =
-    repo.findPatient(MemoryIds.patientOf(memoryId)).map(_.profileText).getOrElse("Không tìm thấy hồ sơ.")
-
-  @Tool(value = Array(
-    "Ghi thêm thông tin vào hồ sơ bệnh nhân khi họ nói rõ về dị ứng, bệnh nền hoặc thuốc đang dùng.",
-    "Chỉ ghi điều bệnh nhân tự nói, không suy đoán."))
-  def updatePatientProfile(
-      @ToolMemoryId memoryId: String,
-      @P(name = "field", value = "Một trong: ALLERGY, CONDITION, MEDICATION") field: String,
-      @P(name = "value", value = "Giá trị cần thêm, ví dụ: penicillin") value: String
-  ): String =
-    ProfileField.parse(field) match
-      case None => "field phải là ALLERGY, CONDITION hoặc MEDICATION"
-      case Some(f) =>
-        repo.addToProfile(MemoryIds.patientOf(memoryId), f, value.trim).fold(identity, _ => s"Đã cập nhật hồ sơ: $value")
-
-final class MedicationTools(repo: ClinicRepository):
-
-  @Tool(value = Array(
-    "Kiểm tra tương tác giữa các thuốc (bảng dữ liệu mẫu). Tự động gộp thêm thuốc bệnh nhân đang dùng trong hồ sơ."))
-  def checkInteractions(
-      @ToolMemoryId memoryId: String,
-      @P(name = "drugs", value = "Tên các thuốc cần kiểm tra, phân tách bằng dấu phẩy") drugs: String
-  ): String =
-    val current = repo.findPatient(MemoryIds.patientOf(memoryId)).map(_.medications).getOrElse(Nil)
-    val all     = (drugs.split(",").map(_.trim).toList ++ current).filter(_.nonEmpty).distinct
-    DrugInteractions.check(all) match
-      case Nil => s"Không thấy tương tác nào trong bảng mẫu cho: ${all.mkString(", ")}. Bảng mẫu không đầy đủ."
-      case xs  => xs.map(i => s"${i.a} + ${i.b} (mức ${i.severity}): ${i.note}").mkString("\n")

@@ -3,8 +3,7 @@ package demo.health.backend.http
 import cats.effect.IO
 import demo.health.domain.model.*
 import demo.health.domain.port.*
-import io.circe.{Decoder, Encoder, Json}
-import io.circe.generic.semiauto.*
+import io.circe.{Decoder, Json}
 import io.circe.syntax.*
 import org.http4s.*
 import org.http4s.circe.CirceEntityCodec.*
@@ -13,7 +12,7 @@ import org.slf4j.LoggerFactory
 
 /** Adapter vào (driving): REST API JSON. Chỉ gọi port của domain (use case + repository). */
 final class ApiRoutes(conversations: ConversationUseCase, repo: ClinicRepository):
-  import ApiRoutes.{*, given}
+  import JsonCodecs.given
   private val log = LoggerFactory.getLogger(getClass)
 
   /** Mỗi trình duyệt có một session id (cookie `sid`), do SessionMiddleware gắn vào. */
@@ -75,38 +74,4 @@ final class ApiRoutes(conversations: ConversationUseCase, repo: ClinicRepository
       })
 
     case GET -> Root / "api" / "graph" => Ok(Json.obj("mermaid" -> conversations.diagram.asJson))
-  }
-
-object ApiRoutes:
-  // ---- DTO và JSON codec (circe). Domain không phụ thuộc circe; codec nằm ở adapter này.
-  final case class ChatRequest(patientId: String, message: String)
-  final case class DecisionRequest(patientId: String, confirm: Boolean)
-  final case class ErrorBody(error: String)
-  final case class PendingBody(pending: Option[PendingBooking])
-  final case class TurnBody(turn: TurnResult, patient: Patient)
-  final case class AppointmentView(id: String, time: String, startAt: String, patient: String, doctor: String,
-                                   specialty: String, reason: String, status: String, summary: Option[ConsultationSummary])
-
-  given Decoder[ChatRequest]               = deriveDecoder
-  given Decoder[DecisionRequest]           = deriveDecoder
-  given Encoder[ErrorBody]                 = deriveEncoder
-  given Encoder[Patient]                   = deriveEncoder
-  given Encoder[PendingBooking]            = deriveEncoder
-  given Encoder[PendingBody]               = deriveEncoder
-  given Encoder[TraceEvent]                = deriveEncoder
-  given Encoder[TurnResult]                = deriveEncoder
-  given Encoder[TurnBody]                  = deriveEncoder
-  given Encoder[ConsultationSummary]       = deriveEncoder
-  given Encoder[AppointmentView]           = deriveEncoder
-
-/** Gắn cookie session cho mọi request chưa có. */
-object Session:
-  val Cookie = "sid"
-  def middleware(routes: HttpRoutes[IO]): HttpRoutes[IO] = cats.data.Kleisli { (req: Request[IO]) =>
-    req.cookies.find(_.name == Cookie) match
-      case Some(_) => routes(req)
-      case None =>
-        val sid  = java.util.UUID.randomUUID().toString.take(12)
-        val req2 = req.addCookie(Cookie, sid)
-        routes(req2).map(_.addCookie(ResponseCookie(Cookie, sid, path = Some("/"), httpOnly = true)))
   }

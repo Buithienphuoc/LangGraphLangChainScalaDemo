@@ -3,9 +3,6 @@ package demo.health.backend
 import demo.health.backend.persistence.DbConfig
 import demo.health.langchain.*
 
-enum Storage:
-  case Memory, Postgres
-
 final case class AppConfig(port: Int, storage: Storage, db: DbConfig, ai: AiConfig)
 
 /** Đọc cấu hình từ biến môi trường (xem README). */
