@@ -5,8 +5,6 @@ import javax.sql.DataSource
 import org.postgresql.ds.PGSimpleDataSource
 import scala.util.Using
 
-final case class DbConfig(host: String, port: Int, database: String, user: String, password: String)
-
 object Db:
   def dataSource(c: DbConfig): DataSource =
     val ds = PGSimpleDataSource()

@@ -20,13 +20,7 @@ final class FakeAiPorts(repo: ClinicRepository):
         else Intent.OTHER
       IntentDecision(intent, "giả lập"),
     knowledge = (_, _) => AssistantReply("Phòng khám mở cửa 7:30 đến 17:00.", List("Phòng khám An Khang")),
-    triage = new SymptomTriage:
-      def extract(conversation: String) =
-        if conversation.contains("ngày") then SymptomReport(List("đau bụng"), "3 ngày", 5, 40, Nil)
-        else SymptomReport(List("đau bụng"), "", 0, 40, List("Bạn bị bao lâu rồi?"))
-      def classify(specialties: List[String], report: String) =
-        TriageResult(Urgency.VisitThisWeek, "Tiêu hoá", "Nên khám tiêu hoá.", List("Ăn nhẹ"))
-    ,
+    triage = FakeSymptomTriage,
     booking = (_, _) =>
       bookingCalls += 1
       val slot = repo.availableSlots("BS04", 1).head
@@ -35,5 +29,5 @@ final class FakeAiPorts(repo: ClinicRepository):
         Some(BookingProposal(slot.id, "đau bụng"))),
     medication = (_, _) => AssistantReply("Hãy hỏi dược sĩ."),
     summarizer = _ => ConsultationSummary("Đau bụng", "40 tuổi", "Gợi ý: tiêu hoá", "Khám Tiêu hoá"),
-    tracer = TurnTracer.noop
+    tracer = NoopTurnTracer
   )

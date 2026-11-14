@@ -4,8 +4,6 @@ package demo.health.domain.model
   * kiểm thử được. Danh sách chỉ phục vụ demo, không phải tiêu chuẩn y khoa.
   */
 object RedFlags:
-  final case class Hit(label: String)
-
   // (nhãn hiển thị, các cụm từ đã bỏ dấu)
   private val rules: List[(String, List[String])] = List(
     "Đau ngực"             -> List("dau nguc", "tuc nguc", "dau that nguc", "chest pain"),
@@ -18,9 +16,9 @@ object RedFlags:
     "Sốt cao ở trẻ nhỏ"    -> List("tre so sinh sot", "be sot cao", "sot 40", "sot tren 40")
   )
 
-  def detect(text: String): List[Hit] =
+  def detect(text: String): List[RedFlagHit] =
     val t = Text.normalize(text)
-    rules.collect { case (label, keys) if keys.exists(t.contains) => Hit(label) }
+    rules.collect { case (label, keys) if keys.exists(t.contains) => RedFlagHit(label) }
 
   val emergencyMessage: String =
     """⚠️ Những gì bạn mô tả có thể là tình huống khẩn cấp.

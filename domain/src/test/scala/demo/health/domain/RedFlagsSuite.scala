@@ -13,11 +13,3 @@ class RedFlagsSuite extends munit.FunSuite:
   test("normalize xử lý chữ đ") {
     assertEquals(Text.normalize("Đột quỵ"), "dot quy")
   }
-
-class DrugInteractionsSuite extends munit.FunSuite:
-  test("tìm thấy tương tác aspirin + ibuprofen, không phân biệt hoa thường") {
-    assertEquals(DrugInteractions.check(List("Aspirin", "IBUPROFEN")).map(_.severity), List("trung bình"))
-  }
-  test("một thuốc thì không có tương tác") {
-    assert(DrugInteractions.check(List("metformin")).isEmpty)
-  }
